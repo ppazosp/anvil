@@ -1,0 +1,30 @@
+Anvil
+Copyright (c) 2026 Pablo Pazos
+
+This product includes code adapted from the following projects:
+
+---
+
+feature-dev, pr-review-toolkit, code-simplifier
+Copyright Anthropic
+Licensed under the Apache License, Version 2.0
+
+The explorer, architect, and reviewer agents are adapted from agents
+in the feature-dev, pr-review-toolkit, and code-simplifier plugins.
+The simplifier agent is adapted from the code-simplifier plugin.
+
+You may obtain a copy of the Apache License at:
+http://www.apache.org/licenses/LICENSE-2.0
+
+---
+
+superpowers
+Copyright (c) 2025 Jesse Vincent
+Licensed under the MIT License
+
+The TDD, systematic debugging, verification, and worktree management
+processes inlined in strike.md and mend.md are adapted from skills
+in the superpowers plugin.
+
+You may obtain a copy of the MIT License at:
+https://opensource.org/licenses/MIT

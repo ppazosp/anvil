@@ -1,0 +1,43 @@
+{
+  "name": "anvil",
+  "version": "1.0.0",
+  "description": "Spec-driven project management for solo developers. Forge specs into issues, strike them into code.",
+  "commands": [
+    {
+      "name": "forge",
+      "description": "Spec → phases → issue .md files",
+      "file": "commands/forge.md",
+      "argument_hint": "Project name (e.g. \"myapp\")"
+    },
+    {
+      "name": "strike",
+      "description": "Implement a feature issue end-to-end",
+      "file": "commands/strike.md",
+      "argument_hint": "Issue ID (e.g. P1-01, 003)"
+    },
+    {
+      "name": "mend",
+      "description": "Fix a bug issue with TDD",
+      "file": "commands/mend.md",
+      "argument_hint": "Issue ID (e.g. P1-01, 003)"
+    },
+    {
+      "name": "inspect",
+      "description": "Project status dashboard",
+      "file": "commands/inspect.md",
+      "argument_hint": "Project name"
+    },
+    {
+      "name": "quench",
+      "description": "Manually complete an issue",
+      "file": "commands/quench.md",
+      "argument_hint": "Issue ID"
+    }
+  ],
+  "agents": [
+    { "name": "explorer", "file": "agents/explorer.md" },
+    { "name": "architect", "file": "agents/architect.md" },
+    { "name": "simplifier", "file": "agents/simplifier.md" },
+    { "name": "reviewer", "file": "agents/reviewer.md" }
+  ]
+}
