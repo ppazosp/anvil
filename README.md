@@ -12,6 +12,9 @@ Forge specs into issues. Strike them into code.
 
 ```bash
 npx skills add ppazosp/anvil
+
+# update later
+npx skills update
 ```
 
 This installs Anvil to `~/.agents/skills/anvil/` where it's automatically discovered by Claude Code, Codex, Copilot, Cursor, Gemini CLI, OpenCode, and [18+ other agents](https://agentskills.io).
