@@ -6,45 +6,25 @@ Forge specs into issues. Strike them into code.
 
 **Works with:** Claude Code, Codex, GitHub Copilot CLI, OpenCode, or any AI coding agent that supports markdown instructions and subagents.
 
-## Setup
+## Install
 
-### Claude Code
+### Any Agent (recommended)
+
+```bash
+npx skills add ppazosp/anvil
+```
+
+This installs Anvil to `~/.agents/skills/anvil/` where it's automatically discovered by Claude Code, Codex, Copilot, Cursor, Gemini CLI, OpenCode, and [18+ other agents](https://agentskills.io).
+
+### Claude Code (plugin mode)
 
 ```bash
 claude plugin add /path/to/anvil
-# Commands available as /forge, /strike, /mend, /inspect, /quench
 ```
 
-### Codex / Copilot CLI / OpenCode / Other Agents
+### Manual
 
-Anvil's commands and agents are plain markdown files — any agent that can read instructions from `.md` files can use them.
-
-1. Copy this repo into your project or reference it:
-   ```bash
-   git clone https://github.com/ppazosp/anvil.git .anvil
-   ```
-
-2. Add to your agent's instruction file (e.g. `AGENTS.md`, `codex.md`, `.github/copilot-instructions.md`):
-   ```markdown
-   ## Project Management
-
-   This project uses Anvil for spec-driven issue management.
-   - Commands: see `.anvil/commands/` — forge.md, strike.md, mend.md, inspect.md, quench.md
-   - Agents: see `.anvil/agents/` — explorer.md, architect.md, simplifier.md, reviewer.md
-   - Issue schema: see `.anvil/docs/issue-schema.md`
-
-   When asked to /forge, /strike, /mend, /inspect, or /quench, read and follow
-   the corresponding command file in `.anvil/commands/`.
-   ```
-
-3. Invoke commands by asking the agent:
-   ```
-   "Run /forge for myapp"
-   "Run /strike P1-01"
-   "Show me /inspect for myapp"
-   ```
-
-The commands use generic language — "ask the user", "launch a subagent", "run tests" — that any agent can interpret. Agent prompts in `agents/` can be used as system prompts for subagent dispatch on any platform.
+Clone into your project and point your agent's instruction file (`AGENTS.md`, `.github/copilot-instructions.md`, etc.) to the `AGENTS.md` file in this repo.
 
 ## Quick Start
 
