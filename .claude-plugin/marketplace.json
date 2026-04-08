@@ -1,0 +1,11 @@
+{
+  "name": "anvil",
+  "owner": { "name": "ppazosp" },
+  "plugins": [
+    {
+      "name": "anvil",
+      "source": "./",
+      "description": "Spec-driven project management for solo developers"
+    }
+  ]
+}
