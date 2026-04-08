@@ -36,13 +36,13 @@ Clone into your project and point your agent's instruction file (`AGENTS.md`, `.
 /inspect myapp
 
 # 3. Strike: implement a feature end-to-end
-/strike P1-01
+/strike P1-001
 
 # 4. Mend: fix a bug with TDD
 /mend 003
 
 # 5. Quench: manually close an issue
-/quench P1-02
+/quench P1-002
 ```
 
 ## Commands
@@ -50,7 +50,7 @@ Clone into your project and point your agent's instruction file (`AGENTS.md`, `.
 | Command | What it does |
 |---------|-------------|
 | `/forge <project>` | Spec interrogation → phase breakdown → issue .md files with parallelism diagrams |
-| `/inspect <project>` | Status dashboard with progress bars, branch trees, and ready-to-launch list |
+| `/inspect <project>` | Status dashboard with progress bars, heat trees, and ready-to-launch list |
 | `/strike <issue-id>` | Full autonomous implementation: explore → plan → TDD → simplify → review → merge |
 | `/mend <issue-id>` | TDD bug fix: reproduce with failing test → fix → verify → close |
 | `/quench <issue-id>` | Manually complete an issue after doing the work yourself |
@@ -76,13 +76,11 @@ Issues are markdown files with YAML frontmatter in `docs/specs/<project>/issues/
 
 ```yaml
 ---
-id: P1-01
+id: P1-001
 title: Create user schema
 status: todo
 phase: 1
-branch: data-model
-position: 1
-branch_size: 2
+heat: data-model
 priority: 1
 blocked_by: []
 ---
@@ -119,16 +117,16 @@ See [docs/issue-schema.md](docs/issue-schema.md) for the full schema.
 
 ### Parallelism
 
-Forge organizes issues into branches (workstreams). Issues in different branches touch different code and can run in parallel via separate worktrees:
+Forge organizes issues into heats (parallel workstreams). Issues in different heats touch different code and can run in parallel via separate worktrees:
 
 ```
 Phase 1: Foundation
-├── data-model (sequential)
-│   ├── P1-01: Create schema ──▶ P1-02: Add indexes
-├── auth (independent)
-│   └── P1-03: Auth middleware
-└── config (independent)
-    └── P1-04: Environment setup
+├── data-model heat (sequential)
+│   ├── P1-001: Create schema ──▶ P1-002: Add indexes
+├── auth heat (independent)
+│   └── P1-003: Auth middleware
+└── config heat (independent)
+    └── P1-004: Environment setup
 
 Max parallelism: 3 agents
 ```

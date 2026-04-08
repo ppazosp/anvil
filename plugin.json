@@ -13,13 +13,13 @@
       "name": "strike",
       "description": "Implement a feature issue end-to-end",
       "file": "commands/strike.md",
-      "argument_hint": "Issue ID (e.g. P1-01, 003)"
+      "argument_hint": "Issue ID (e.g. P1-001, 003)"
     },
     {
       "name": "mend",
       "description": "Fix a bug issue with TDD",
       "file": "commands/mend.md",
-      "argument_hint": "Issue ID (e.g. P1-01, 003)"
+      "argument_hint": "Issue ID (e.g. P1-001, 003)"
     },
     {
       "name": "inspect",

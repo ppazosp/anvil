@@ -14,7 +14,7 @@ All issues live in: `docs/specs/<project>/issues/`
 
 ## File Naming
 
-- Forged issues: `P<phase>-<NN>-<slug>.md` (e.g. `P1-01-docker-compose.md`)
+- Forged issues: `P<phase>-<NN>-<slug>.md` (e.g. `P1-001-docker-compose.md`)
 - Standalone issues: `<NNN>-<slug>.md` (e.g. `001-fix-login.md`)
 
 The `<slug>` is a kebab-case summary of the issue title.
@@ -23,14 +23,11 @@ The `<slug>` is a kebab-case summary of the issue title.
 
 ```yaml
 ---
-id: P1-01                  # Canonical identifier, matches filename prefix
+id: P1-001                  # Canonical identifier, matches filename prefix
 title: Short issue title    # Action verb + what
 status: todo                # todo | in-progress | done | canceled
 phase: 1                   # Phase number (null for standalone)
-phase_name: Foundation      # Human-readable phase name (null for standalone)
-branch: infra               # Parallel workstream name
-position: 1                 # Position in branch sequence (1-indexed)
-branch_size: 3              # Total issues in this branch
+heat: infra                 # Parallel workstream name (a "heat" in forging)
 priority: 1                 # 1=critical, 2=high, 3=medium, 4=low
 blocked_by: []              # List of issue IDs that must be done first
 created: 2026-04-03         # ISO date
@@ -61,7 +58,7 @@ Detailed requirements, potentially with sub-sections.
 ## Context
 Phase spec: `docs/specs/<project>/phase-N-<name>.md`
 General spec: `docs/specs/<project>/general.md`
-Branch: `<branch>` (position N of M)
+Heat: `<heat-name>`
 ```
 
 ### Completed Issue (after `/strike`, `/mend`, or `/quench`)
@@ -111,8 +108,8 @@ For bug fixes (`/mend`), the completion summary uses:
 ### Forged Issues
 - Format: `P<phase>-<NN>`
 - Phase is 1-indexed
-- NN is 2-digit, sequential within the phase (01, 02, ..., 99)
-- Examples: `P1-01`, `P2-03`, `P4-14`
+- NN is 3-digit, sequential within the phase (001, 002, ..., 999)
+- Examples: `P1-001`, `P2-003`, `P4-014`
 
 ### Standalone Issues
 - Format: `<NNN>`
@@ -201,8 +198,8 @@ Propose phases based on technical dependencies, deliverable value, complexity ba
 
 **Goal:** Break the phase into issues optimized for parallel agent execution
 
-1. Identify independent workstreams (branches) by code area/domain
-2. Define each issue with title, ACs, files affected, priority, branch label
+1. Identify independent workstreams (heats) by code area/domain
+2. Define each issue with title, ACs, files affected, priority, heat name
 3. Granularity check: each issue must be executable by a single `/strike` run, touch 1-8 files, have testable ACs, be implementable without human decisions mid-run
 4. Present parallelism diagram BEFORE creating anything
 5. Get explicit user approval
@@ -211,7 +208,7 @@ Propose phases based on technical dependencies, deliverable value, complexity ba
 
 ## Phase 5: Create Issue Files
 
-For each issue (in dependency order, blockers first), write to `docs/specs/<project>/issues/P<N>-<NN>-<slug>.md` with YAML frontmatter (id, title, status: todo, phase, branch, position, priority, blocked_by, created, updated) and body (Objective, Requirements, Acceptance Criteria, Files Likely Affected, Context).
+For each issue (in dependency order, blockers first), write to `docs/specs/<project>/issues/P<N>-<NNN>-<slug>.md` with YAML frontmatter (id, title, status: todo, phase, heat, priority, blocked_by, created, updated) and body (Objective, Requirements, Acceptance Criteria, Files Likely Affected, Context).
 
 Update `phases.md` marking phase `[x]` with issue IDs. Commit. Present summary with `/strike` launch commands.
 
@@ -221,8 +218,8 @@ Ask to continue with next phase or stop. If all phases complete, present full pr
 
 ## Red Flags — STOP and ask user if:
 - Phase spec contradicts general spec
-- A single branch has 5+ sequential issues
-- Cross-branch dependencies are unavoidable
+- A single heat has 5+ sequential issues
+- Cross-heat dependencies are unavoidable
 - Phase has >10 issues or 1-2 issues
 
 ## Autonomous Decision Guidelines
@@ -237,12 +234,12 @@ Ask to continue with next phase or stop. If all phases complete, present full pr
 
 End-to-end feature implementation driven by an issue .md file. Reads the issue, implements the feature autonomously, and updates the issue when done.
 
-**Input:** Issue ID (e.g. P1-01, 003)
+**Input:** Issue ID (e.g. P1-001, 003)
 
 ## Phase 0: Load Issue & Context
 
 1. Find the issue file: glob for `docs/specs/*/issues/$ID-*.md`
-2. Parse YAML frontmatter for: id, title, status, branch, priority, blocked_by. Detect `IS_FORGED` (id matches `P<N>-<NN>` pattern).
+2. Parse YAML frontmatter for: id, title, status, heat, priority, blocked_by. Detect `IS_FORGED` (id matches `P<N>-<NNN>` pattern).
 3. **Status check:** Stop if done/canceled. Warn if in-progress.
 4. **Blocker check:** For each blocker, read its .md file. If ANY not `done`: STOP. If done: read their Completion Summary sections as `BLOCKER_CONTEXT`.
 5. **Load spec files if forged:** Parse issue body for spec path references, read all.
@@ -264,7 +261,7 @@ Launch 2-3 architect subagents IN PARALLEL (`agents/architect.md`) with differen
 
 Check for `.worktrees/` or `worktrees/`. Verify gitignored. Create worktree:
 ```bash
-git worktree add .worktrees/feature-<ISSUE_ID> -b feature/<ISSUE_BRANCH>-<ISSUE_ID>
+git worktree add .worktrees/strike-<ISSUE_ID> -b strike/<ISSUE_HEAT>-<ISSUE_ID>
 ```
 Install dependencies (auto-detect). Run tests for clean baseline.
 
@@ -292,7 +289,7 @@ Run full test suite, type check, lint. **VERIFICATION GATE:** Show actual comman
 
 ## Phase 9: Complete — Merge & Update Issue
 
-**9a: Auto-Merge.** Squash merge to main. Push. Delete worktree and feature branch.
+**9a: Auto-Merge.** Squash merge to main. Push. Delete worktree and strike branch.
 
 **9b: Update Phase Spec (if forged).** Mark completed acceptance criteria as `[x]`.
 
@@ -316,7 +313,7 @@ Run full test suite, type check, lint. **VERIFICATION GATE:** Show actual comman
 
 Bug-fix workflow driven by an issue .md file. Reproduces the bug with a failing test first, then fixes it.
 
-**Input:** Issue ID (e.g. P1-01, 003)
+**Input:** Issue ID (e.g. P1-001, 003)
 
 ## Phase 0: Load Issue & Context
 
@@ -328,7 +325,7 @@ If forged: read specs, present expected vs actual, confirm. If standalone: ident
 
 ## Phase 2: Codebase Exploration
 
-Launch 1 explorer subagent (`agents/explorer.md`) to trace the affected code path. Assess scope: small fix (1-2 files, fix branch) vs larger refactor (3+ files, worktree).
+Launch 1 explorer subagent (`agents/explorer.md`) to trace the affected code path. Assess scope: small fix (1-2 files, mend branch) vs larger refactor (3+ files, worktree).
 
 ## Phase 3: Reproduce with Failing Test
 
@@ -348,13 +345,13 @@ Dispatch simplifier subagent (`agents/simplifier.md`), then reviewer subagent (`
 
 ## Phase 7: Commit + Complete
 
-Commit with `fix[<module>]: <description>`. Ask user: merge to main, create PR, or keep branch. Update phase spec ACs if forged. Update issue file: set status, append Completion Summary (What was broken, Root cause, Test added, Fix applied, Files modified).
+Commit with `fix[<module>]: <description>`. Ask user: merge to main, create PR, or keep mend branch. Update phase spec ACs if forged. Update issue file: set status, append Completion Summary (What was broken, Root cause, Test added, Fix applied, Files modified).
 
 ---
 
 # Command: /inspect
 
-Show the current state of a forged project: phase progress, branch diagrams, and what to launch next.
+Show the current state of a forged project: phase progress, heat diagrams, and what to launch next.
 
 **Input:** Project name
 
@@ -372,12 +369,12 @@ Classify issues: done, in-progress, ready (todo + all blockers done), blocked (t
 Phase 1: <name>  ████████████░░░░ 75% (3/4 done)
 ──────────────────────────────────────────────────
   data-model
-  ✅ P1-01  Create user schema
-  ✅ P1-02  Add relations and indexes
+  ✅ P1-001  Create user schema
+  ✅ P1-002  Add relations and indexes
   auth
-  ✅ P1-03  Setup auth middleware
+  ✅ P1-003  Setup auth middleware
   config
-  🔄 P1-04  Environment and config setup
+  🔄 P1-004  Environment and config setup
 ```
 
 Legend: ✅ done, 🔄 in-progress, ⏳ ready, 🔒 blocked, ← READY = launchable

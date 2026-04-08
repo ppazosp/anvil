@@ -20,7 +20,7 @@ Forge specs into issues. Strike them into code.
 | `/forge <project>` | `commands/forge.md` | Spec interrogation → phase breakdown → issue .md files with parallelism diagrams |
 | `/strike <issue-id>` | `commands/strike.md` | Full autonomous implementation: explore → plan → TDD → simplify → review → merge |
 | `/mend <issue-id>` | `commands/mend.md` | TDD bug fix: reproduce with failing test → fix → verify → close |
-| `/inspect <project>` | `commands/inspect.md` | Status dashboard with progress bars, branch trees, and ready-to-launch list |
+| `/inspect <project>` | `commands/inspect.md` | Status dashboard with progress bars, heat trees, and ready-to-launch list |
 | `/quench <issue-id>` | `commands/quench.md` | Manually complete an issue after doing the work yourself |
 
 ## Agents
@@ -40,13 +40,11 @@ Issues are `.md` files in `docs/specs/<project>/issues/` with YAML frontmatter:
 
 ```yaml
 ---
-id: P1-01              # P<phase>-<NN> for forged, <NNN> for standalone
+id: P1-001             # P<phase>-<NNN> for forged, <NNN> for standalone
 title: Create user schema
 status: todo           # todo | in-progress | done | canceled
 phase: 1
-branch: data-model
-position: 1
-branch_size: 2
+heat: data-model       # parallel workstream
 priority: 1            # 1=critical → 4=low
 blocked_by: []
 created: 2026-04-03

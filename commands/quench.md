@@ -1,6 +1,6 @@
 ---
 description: Manually complete an issue — append completion summary, mark done
-argument-hint: Issue ID (e.g. P1-01, 003)
+argument-hint: Issue ID (e.g. P1-001, 003)
 ---
 
 # Quench

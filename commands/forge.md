@@ -232,18 +232,18 @@ Phase 3: <name> — <description>
 
 **Actions:**
 
-1. **Identify independent workstreams (branches):**
+1. **Identify independent workstreams (heats):**
    - Group work by code area / domain (e.g. `data-model`, `auth`, `api`, `ui`)
-   - Issues in the same branch share files/state → must be sequential
-   - Issues in different branches touch different code → can run in parallel
-   - Minimize cross-branch dependencies
+   - Issues in the same heat share files/state → must be sequential
+   - Issues in different heats touch different code → can run in parallel
+   - Minimize cross-heat dependencies
 
 2. **Define each issue:**
    - **Title:** action verb + what (e.g. "Create user schema with roles and permissions")
    - **Acceptance criteria:** inherited from phase spec, scoped to this issue
    - **Files likely affected:** specific paths from codebase exploration
    - **Priority:** inferred from dependency order (blocking issues = higher priority)
-   - **Branch label:** domain name (e.g. `data-model`, `auth`, `api`)
+   - **Heat name:** domain name (e.g. `data-model`, `auth`, `api`)
 
 3. **Granularity check — each issue MUST be:**
    - Executable by a single `/strike` run
@@ -255,7 +255,7 @@ Phase 3: <name> — <description>
 4. **Granularity red lines:**
    - **Too big → split:** "Build the auth system" → schema, middleware, login endpoint, registration, token refresh
    - **Too small → merge:** "Add field X" + "Add field Y" + "Add field Z" → "Create schema with fields X, Y, Z"
-   - **Too coupled → redesign branches:** if issue A needs output of issue B in a different branch, they belong in the same branch
+   - **Too coupled → redesign heats:** if issue A needs output of issue B in a different heat, they belong in the same heat
 
 5. **Present parallelism diagram BEFORE creating anything:**
 
@@ -276,7 +276,7 @@ Max parallelism: N agents
    Agent 3: <label> (#5)
 ```
 
-6. **Get explicit user approval** on the issue breakdown, branch assignment, and parallelism plan
+6. **Get explicit user approval** on the issue breakdown, heat assignment, and parallelism plan
 
 **DO NOT create issue files until user confirms.**
 
@@ -290,25 +290,22 @@ Max parallelism: N agents
 
 1. **For each issue (in dependency order, blockers first):**
 
-   Write to `docs/specs/<project>/issues/P<N>-<NN>-<slug>.md`:
+   Write to `docs/specs/<project>/issues/P<N>-<NNN>-<slug>.md`:
 
    ```markdown
    ---
-   id: P<N>-<NN>
+   id: P<N>-<NNN>
    title: <title>
    status: todo
    phase: <N>
-   phase_name: <name>
-   branch: <branch-label>
-   position: <position in branch>
-   branch_size: <total issues in branch>
+   heat: <heat-name>
    priority: <1-4>
    blocked_by: [<list of IDs>]
    created: <YYYY-MM-DD>
    updated: <YYYY-MM-DD>
    ---
 
-   # P<N>-<NN>: <Title>
+   # P<N>-<NNN>: <Title>
 
    ## Objective
    <what this issue accomplishes — 1-2 sentences>
@@ -327,15 +324,15 @@ Max parallelism: N agents
    ## Context
    Phase spec: `docs/specs/<project>/phase-N-<name>.md`
    General spec: `docs/specs/<project>/general.md`
-   Branch: `<branch-label>` (position N of M)
+   Heat: `<heat-name>`
    ```
 
 2. **Update `phases.md`:** mark this phase `[x]` and annotate with issue IDs:
 
    ```markdown
    - [x] **Phase 1: <name>** — <description>
-     - Issues: P1-01, P1-02, P1-03, P1-04
-     - Branches: data-model (P1-01→P1-02), auth (P1-03), config (P1-04)
+     - Issues: P1-001, P1-002, P1-003, P1-004
+     - Heats: data-model (P1-001→P1-002), auth (P1-003), config (P1-004)
    ```
 
 3. **Commit:** `feat[specs]: forge phase N issues for <project>`
@@ -345,18 +342,18 @@ Max parallelism: N agents
 ```
 Phase N: <Name> — FORGED
 
-├── <label> (sequential)
-│   ├── P1-01: <title> ──blocks──▶ P1-02
-│   └── P1-02: <title>
-├── <label> (sequential)
-│   └── P1-03: <title>
-└── <label> (independent)
-    └── P1-04: <title>
+├── <heat> (sequential)
+│   ├── P1-001: <title> ──blocks──▶ P1-002
+│   └── P1-002: <title>
+├── <heat> (sequential)
+│   └── P1-003: <title>
+└── <heat> (independent)
+    └── P1-004: <title>
 
 Ready to launch 3 agents in parallel:
-   /strike P1-01  (then P1-02 after)
-   /strike P1-03
-   /strike P1-04
+   /strike P1-001  (then P1-002 after)
+   /strike P1-003
+   /strike P1-004
 ```
 
 ---
@@ -369,7 +366,7 @@ Ready to launch 3 agents in parallel:
 - If no → stop. User can re-enter later.
 
 **If all phases complete:**
-- Present full project map with all phases, branches, and issue counts
+- Present full project map with all phases, heats, and issue counts
 - Update `phases.md` with final status
 - Commit: `feat[specs]: complete project forge for <project>`
 
@@ -378,8 +375,8 @@ Ready to launch 3 agents in parallel:
 ## Red Flags — STOP and ask user if:
 
 - Phase spec contradicts general spec
-- A single branch has 5+ sequential issues (split into sub-branches)
-- Cross-branch dependencies are unavoidable (redesign branches)
+- A single heat has 5+ sequential issues (split into sub-heats)
+- Cross-heat dependencies are unavoidable (redesign heats)
 - Issue requires architectural decisions not in specs (go back to spec phase)
 - Phase has >10 issues (consider splitting the phase)
 - Phase has 1-2 issues (consider merging with adjacent phase)
@@ -390,10 +387,10 @@ Ready to launch 3 agents in parallel:
 
 | Situation | Default Decision |
 |-----------|------------------|
-| Branch naming | Domain names: `data-model`, `auth`, `api`, `ui`, `config` |
+| Heat naming | Domain names: `data-model`, `auth`, `api`, `ui`, `config` |
 | Issue priority | Blockers get higher priority, leaf issues get lower |
 | Phase size | Target 3-8 issues per phase |
-| Branch size | Target 1-4 issues per branch |
+| Heat size | Target 1-4 issues per heat |
 | Acceptance criteria | 2-5 per issue, always testable |
 | Spec format | Follow the templates in this command exactly |
 | Commit messages | `feat[specs]: <action> for <project>` |

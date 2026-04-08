@@ -1,6 +1,6 @@
 ---
 description: Fix a bug issue with TDD — reproduce with failing test, fix, verify, close
-argument-hint: Issue ID (e.g. P1-01, 003)
+argument-hint: Issue ID (e.g. P1-001, 003)
 ---
 
 # Mend
@@ -22,7 +22,7 @@ Bug-fix workflow driven by an issue .md file. Reproduces the bug with a failing 
    - `ISSUE_ID`: frontmatter `id`
    - `ISSUE_TITLE`: frontmatter `title`
    - `ISSUE_STATUS`: frontmatter `status`
-   - `ISSUE_BRANCH`: frontmatter `branch`
+   - `ISSUE_HEAT`: frontmatter `heat`
    - `ISSUE_PRIORITY`: frontmatter `priority`
    - `ISSUE_BLOCKED_BY`: frontmatter `blocked_by`
    - `IS_FORGED`: whether the id matches `P<N>-<NN>` pattern
@@ -68,22 +68,22 @@ Bug-fix workflow driven by an issue .md file. Reproduces the bug with a failing 
 1. Read key files identified
 2. Identify root cause area
 3. **Assess scope:**
-   - Small fix (1-2 files) → fix branch in current workspace
+   - Small fix (1-2 files) → mend branch in current workspace
    - Larger refactor (3+ files) → create worktree
 
 **If worktree needed:**
 1. Check for `.worktrees/` directory (create if needed, verify gitignored)
 2. Create worktree:
    ```bash
-   git worktree add .worktrees/fix-<ISSUE_ID> -b fix/<ISSUE_BRANCH>-<ISSUE_ID>
-   cd .worktrees/fix-<ISSUE_ID>
+   git worktree add .worktrees/mend-<ISSUE_ID> -b mend/<ISSUE_HEAT>-<ISSUE_ID>
+   cd .worktrees/mend-<ISSUE_ID>
    ```
 3. Install dependencies (auto-detect from project files)
 4. Verify tests pass on clean baseline
 
 **If small fix:**
 ```bash
-git checkout -b fix/<ISSUE_BRANCH>-<ISSUE_ID>
+git checkout -b mend/<ISSUE_HEAT>-<ISSUE_ID>
 ```
 
 ---

@@ -1,6 +1,6 @@
 ---
 description: Implement a feature issue end-to-end — read issue, implement, review, merge
-argument-hint: Issue ID (e.g. P1-01, 003)
+argument-hint: Issue ID (e.g. P1-001, 003)
 ---
 
 # Strike
@@ -22,7 +22,7 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
    - `ISSUE_ID`: frontmatter `id`
    - `ISSUE_TITLE`: frontmatter `title`
    - `ISSUE_STATUS`: frontmatter `status`
-   - `ISSUE_BRANCH`: frontmatter `branch`
+   - `ISSUE_HEAT`: frontmatter `heat`
    - `ISSUE_PRIORITY`: frontmatter `priority`
    - `ISSUE_BLOCKED_BY`: frontmatter `blocked_by`
    - `IS_FORGED`: whether the id matches `P<N>-<NN>` pattern
@@ -112,8 +112,8 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
 
 3. **Create worktree:**
    ```bash
-   git worktree add .worktrees/feature-<ISSUE_ID> -b feature/<ISSUE_BRANCH>-<ISSUE_ID>
-   cd .worktrees/feature-<ISSUE_ID>
+   git worktree add .worktrees/strike-<ISSUE_ID> -b strike/<ISSUE_HEAT>-<ISSUE_ID>
+   cd .worktrees/strike-<ISSUE_ID>
    ```
 
 4. **Install dependencies** (auto-detect from project files):
@@ -210,13 +210,13 @@ The reviewer checks:
 ### 9a: Auto-Merge
 
 1. Switch to main worktree
-2. Squash merge: `git merge --squash feature-branch`
+2. Squash merge: `git merge --squash strike-branch`
 3. Commit with descriptive message
 4. Push to remote: `git push`
-5. Delete worktree and feature branch:
+5. Delete worktree and strike branch:
    ```bash
-   git worktree remove .worktrees/feature-<ISSUE_ID>
-   git branch -d feature/<ISSUE_BRANCH>-<ISSUE_ID>
+   git worktree remove .worktrees/strike-<ISSUE_ID>
+   git branch -d strike/<ISSUE_HEAT>-<ISSUE_ID>
    ```
 
 **Capture the merge commit hash.**

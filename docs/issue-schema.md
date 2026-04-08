@@ -6,7 +6,7 @@ All issues live in: `docs/specs/<project>/issues/`
 
 ## File Naming
 
-- Forged issues: `P<phase>-<NN>-<slug>.md` (e.g. `P1-01-docker-compose.md`)
+- Forged issues: `P<phase>-<NNN>-<slug>.md` (e.g. `P1-001-docker-compose.md`)
 - Standalone issues: `<NNN>-<slug>.md` (e.g. `001-fix-login.md`)
 
 The `<slug>` is a kebab-case summary of the issue title.
@@ -15,14 +15,11 @@ The `<slug>` is a kebab-case summary of the issue title.
 
 ```yaml
 ---
-id: P1-01                  # Canonical identifier, matches filename prefix
+id: P1-001                 # Canonical identifier, matches filename prefix
 title: Short issue title    # Action verb + what
 status: todo                # todo | in-progress | done | canceled
 phase: 1                   # Phase number (null for standalone)
-phase_name: Foundation      # Human-readable phase name (null for standalone)
-branch: infra               # Parallel workstream name
-position: 1                 # Position in branch sequence (1-indexed)
-branch_size: 3              # Total issues in this branch
+heat: infra                 # Parallel workstream name (a "heat" in forging)
 priority: 1                 # 1=critical, 2=high, 3=medium, 4=low
 blocked_by: []              # List of issue IDs that must be done first
 created: 2026-04-03         # ISO date
@@ -53,7 +50,7 @@ Detailed requirements, potentially with sub-sections.
 ## Context
 Phase spec: `docs/specs/<project>/phase-N-<name>.md`
 General spec: `docs/specs/<project>/general.md`
-Branch: `<branch>` (position N of M)
+Heat: `<heat-name>`
 ```
 
 ### Completed Issue (after `/strike`, `/mend`, or `/quench`)
@@ -101,10 +98,10 @@ For bug fixes (`/mend`), the completion summary uses:
 ## ID Conventions
 
 ### Forged Issues
-- Format: `P<phase>-<NN>`
+- Format: `P<phase>-<NNN>`
 - Phase is 1-indexed
-- NN is 2-digit, sequential within the phase (01, 02, ..., 99)
-- Examples: `P1-01`, `P2-03`, `P4-14`
+- NNN is 3-digit, sequential within the phase (001, 002, ..., 999)
+- Examples: `P1-001`, `P2-003`, `P4-014`
 
 ### Standalone Issues
 - Format: `<NNN>`
