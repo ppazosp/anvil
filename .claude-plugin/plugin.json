@@ -1,0 +1,7 @@
+{
+  "name": "anvil",
+  "description": "Spec-driven project management for solo developers. Forge specs into issues, strike them into code.",
+  "author": {
+    "name": "ppazosp"
+  }
+}
