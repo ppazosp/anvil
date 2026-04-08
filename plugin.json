@@ -4,6 +4,12 @@
   "description": "Spec-driven project management for solo developers. Forge specs into issues, strike them into code.",
   "commands": [
     {
+      "name": "cast",
+      "description": "Create a standalone issue",
+      "file": "commands/cast.md",
+      "argument_hint": "Project name + title (e.g. myapp \"Fix login\")"
+    },
+    {
       "name": "forge",
       "description": "Spec → phases → issue .md files",
       "file": "commands/forge.md",

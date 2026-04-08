@@ -297,6 +297,7 @@ Max parallelism: N agents
    id: P<N>-<NNN>
    title: <title>
    status: todo
+   kind: strike
    phase: <N>
    heat: <heat-name>
    priority: <1-4>

@@ -29,19 +29,22 @@ Clone into your project and point your agent's instruction file (`AGENTS.md`, `.
 ## Quick Start
 
 ```bash
-# 1. Forge: interrogate → spec → phases → issues
+# 1. Cast: create a standalone issue
+/cast myapp "Fix login redirect" --kind mend
+
+# 2. Forge: interrogate → spec → phases → issues
 /forge myapp
 
-# 2. Inspect: see what's ready to build
+# 3. Inspect: see what's ready to build
 /inspect myapp
 
-# 3. Strike: implement a feature end-to-end
+# 4. Strike: implement a feature end-to-end
 /strike P1-001
 
-# 4. Mend: fix a bug with TDD
+# 5. Mend: fix a bug with TDD
 /mend 003
 
-# 5. Quench: manually close an issue
+# 6. Quench: manually close an issue
 /quench P1-002
 ```
 
@@ -49,8 +52,9 @@ Clone into your project and point your agent's instruction file (`AGENTS.md`, `.
 
 | Command | What it does |
 |---------|-------------|
+| `/cast <project> <title>` | Create a standalone issue .md file |
 | `/forge <project>` | Spec interrogation → phase breakdown → issue .md files with parallelism diagrams |
-| `/inspect <project>` | Status dashboard with progress bars, heat trees, and ready-to-launch list |
+| `/inspect <project>` | Compact status dashboard with progress bars and ready-to-launch commands |
 | `/strike <issue-id>` | Full autonomous implementation: explore → plan → TDD → simplify → review → merge |
 | `/mend <issue-id>` | TDD bug fix: reproduce with failing test → fix → verify → close |
 | `/quench <issue-id>` | Manually complete an issue after doing the work yourself |
@@ -79,6 +83,7 @@ Issues are markdown files with YAML frontmatter in `docs/specs/<project>/issues/
 id: P1-001
 title: Create user schema
 status: todo
+kind: strike
 phase: 1
 heat: data-model
 priority: 1
@@ -91,6 +96,9 @@ See [docs/issue-schema.md](docs/issue-schema.md) for the full schema.
 ### Workflow
 
 ```
+/cast
+  └── Create standalone issue .md file (bug or feature)
+
 /forge
   ├── General spec (interrogation)
   ├── Phase breakdown (dependencies, parallelism)
@@ -98,7 +106,7 @@ See [docs/issue-schema.md](docs/issue-schema.md) for the full schema.
   └── Issue .md files (YAML frontmatter + body)
 
 /inspect
-  └── Parses all issue .md files → dashboard
+  └── Parses all issue .md files → compact dashboard
 
 /strike or /mend
   ├── Read issue .md + check blockers

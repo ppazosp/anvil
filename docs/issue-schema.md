@@ -18,8 +18,9 @@ The `<slug>` is a kebab-case summary of the issue title.
 id: P1-001                 # Canonical identifier, matches filename prefix
 title: Short issue title    # Action verb + what
 status: todo                # todo | in-progress | done | canceled
+kind: strike                # strike (feature) | mend (bug fix)
 phase: 1                   # Phase number (null for standalone)
-heat: infra                 # Parallel workstream name (a "heat" in forging)
+heat: infra                 # Parallel workstream name (null for standalone)
 priority: 1                 # 1=critical, 2=high, 3=medium, 4=low
 blocked_by: []              # List of issue IDs that must be done first
 created: 2026-04-03         # ISO date
@@ -29,7 +30,7 @@ updated: 2026-04-03         # ISO date, updated on every state change
 
 ## Body Structure
 
-### New Issue (created by `/forge` or manually)
+### New Issue (created by `/forge`, `/cast`, or manually)
 
 ```markdown
 # <ID>: <Title>

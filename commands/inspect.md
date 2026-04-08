@@ -5,7 +5,7 @@ argument-hint: Project name (e.g. "myapp")
 
 # Inspect
 
-Show the current state of a forged project: phase progress, heat diagrams with issue status, and what to launch next.
+Show the current state of a project: phase progress, issue status by heat, and what to launch next.
 
 **Project:** $ARGUMENTS
 
@@ -16,97 +16,59 @@ Show the current state of a forged project: phase progress, heat diagrams with i
 1. If `$ARGUMENTS` is empty: ask the user for the project name
 2. Read `docs/specs/<project>/phases.md` for phase breakdown and issue IDs
 3. Glob for `docs/specs/<project>/issues/*.md`
-4. For each issue file: parse YAML frontmatter to extract `id`, `title`, `status`, `phase`, `heat`, `blocked_by`
-5. Read CLAUDE.md for project context
+4. For each issue file: parse YAML frontmatter to extract `id`, `title`, `status`, `phase`, `heat`, `kind`, `blocked_by`
 
 ---
 
 ## Step 2: Build Status Map
 
-**For each phase, classify issues by state:**
+**Classify each issue:**
 - `done` — completed
 - `in-progress` — currently being worked on
 - `todo` + all `blocked_by` issues are `done` → **ready** (launchable)
 - `todo` + has unfinished blockers → **blocked**
 - `canceled` — skip from progress calculation
 
-**Calculate per-phase:**
-- Total issues, done count, in-progress count, blocked count
-- Phase complete = all issues done
-- Phase progress percentage
+**Calculate per-phase:** total, done, in-progress, blocked, progress percentage.
 
 ---
 
 ## Step 3: Display Dashboard
 
-```
-╔══════════════════════════════════════════════════╗
-║  <PROJECT NAME> — Status Dashboard               ║
-╚══════════════════════════════════════════════════╝
-
-Phase 1: <name>  ████████████░░░░ 75% (3/4 done)
-──────────────────────────────────────────────────
-
-  data-model
-  ✅ P1-001  Create user schema
-  ✅ P1-002  Add relations and indexes
-  │
-  auth
-  ✅ P1-003  Setup auth middleware
-  │
-  config
-  🔄 P1-004  Environment and config setup
-  │
-
-Phase 2: <name>  ░░░░░░░░░░░░░░░░ 0% (0/5 done)
-──────────────────────────────────────────────────
-
-  api
-  ⏳ P2-001  Create REST endpoints         ← READY
-  ──▶ P2-002  Add validation middleware
-  ──▶ P2-003  Rate limiting
-  │
-  ui
-  ⏳ P2-004  Login page                    ← READY
-  ──▶ P2-005  Dashboard layout
-```
-
-**Legend:**
-- `✅` done
-- `🔄` in-progress
-- `⏳` todo, ready to launch (no unfinished blockers)
-- `🔒` blocked (has unfinished blockers)
-- `──▶` blocked by previous issue in heat
-- `← READY` can be launched now
-
----
-
-## Step 4: Next Actions
+**Use this compact horizontal format — one line per heat, chain issues with arrows:**
 
 ```
-──────────────────────────────────────────────────
-⚡ Ready to launch (2 issues, 2 parallel agents):
+myapp — Phase 1: Foundation  ████████░░ 3/4
 
-  /strike P2-001
-  /strike P2-004
+  data-model   ✅ P1-001 → ✅ P1-002
+  auth         ✅ P1-003
+  config       🔄 P1-004
 
-⏳ Waiting (3 issues, blocked):
+myapp — Phase 2: API  ░░░░░░░░░░ 0/5
 
-  P2-002 ← waiting on P2-001
-  P2-003 ← waiting on P2-002
-  P2-005 ← waiting on P2-004
-──────────────────────────────────────────────────
+  api          ⏳ P2-001 → 🔒 P2-002 → 🔒 P2-003
+  ui           ⏳ P2-004 → 🔒 P2-005
+
+⚡ /strike P2-001  /strike P2-004
 ```
 
-**If a phase just completed:**
+**Rules:**
+- One line per heat — issues chained horizontally with `→`
+- Heat name left-aligned, padded to align issue chains
+- Icons: `✅` done, `🔄` in-progress, `⏳` ready, `🔒` blocked, `❌` canceled
+- Progress bar: filled/empty blocks proportional to done/total, then `done/total`
+- Ready-to-launch line at the bottom — one line, all launchable issues with their command (`/strike` or `/mend` based on `kind` field)
+- If nothing ready: show what's blocking next (e.g. "⏳ P2-002 waiting on P2-001")
+- Omit completed phases unless `--all` flag
+
+**Phase completion:**
 ```
-🎉 Phase 1 complete! All 4 issues done.
-   Ready to start Phase 2 — run /forge <project> to forge next phase, or launch ready issues above.
+🎉 Phase 1 complete (4/4) — run /forge myapp to forge next phase
 ```
 
-**If all phases complete:**
+**All done:**
 ```
-🎉 All phases complete! <total> issues across <N> phases.
+🎉 All phases complete — 25 issues across 4 phases
 ```
 
 ---
@@ -116,6 +78,7 @@ Phase 2: <name>  ░░░░░░░░░░░░░░░░ 0% (0/5 done)
 | Situation | Behavior |
 |-----------|----------|
 | No `phases.md` found | Glob all issue .md files, group by `phase` field in frontmatter |
+| Standalone issues (no phase) | Show under "Standalone" section |
 | Issue canceled | Show with `❌`, skip from progress calculation |
 | All phases complete | Celebration message + total stats |
 | No issues ready | Show what's blocking and estimated next unblock |
