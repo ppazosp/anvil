@@ -1,10 +1,26 @@
-# Anvil
+<p align="center">
+  <img src="anvil.png" alt="Anvil" width="200">
+</p>
 
-Spec-driven project management for solo developers using AI agents. All state lives in markdown files tracked by git — no external services, no accounts, no API keys.
+<h1 align="center">Anvil</h1>
 
-Forge specs into issues. Strike them into code.
+<p align="center">
+  Spec-driven project management for solo developers using AI agents.
+</p>
 
-**Works with:** Claude Code, Codex, GitHub Copilot CLI, OpenCode, or any AI coding agent that supports markdown instructions and subagents.
+<p align="center">
+  <a href="https://github.com/ppazosp/anvil/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ppazosp/anvil" alt="License"></a>
+  <a href="https://github.com/ppazosp/anvil/releases"><img src="https://img.shields.io/github/v/release/ppazosp/anvil?include_prereleases" alt="Release"></a>
+  <a href="https://skills.sh/ppazosp/anvil"><img src="https://img.shields.io/badge/agent_skill-anvil-blue" alt="Agent Skill"></a>
+  <a href="https://agentskills.io"><img src="https://img.shields.io/badge/works_with-18%2B_agents-green" alt="Works with 18+ agents"></a>
+</p>
+
+<p align="center">
+  Forge specs into issues. Strike them into code.<br>
+  All state in markdown. Zero external services.
+</p>
+
+---
 
 ## Install
 
