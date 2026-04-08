@@ -40,8 +40,8 @@ This installs Anvil to `~/.agents/skills/anvil/` where it's automatically discov
 Install as a plugin to get `/anvil:forge`, `/anvil:strike`, etc. in the autocomplete menu:
 
 ```
-/plugin marketplace add ppazosp/anvil
-/plugin install anvil@anvil
+/plugin marketplace add ppazosp/black-market
+/plugin install anvil@black-market
 ```
 
 Or add to `~/.claude/settings.json`:
@@ -49,12 +49,12 @@ Or add to `~/.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "anvil": {
-      "source": { "source": "github", "repo": "ppazosp/anvil" }
+    "black-market": {
+      "source": { "source": "github", "repo": "ppazosp/black-market" }
     }
   },
   "enabledPlugins": {
-    "anvil@anvil": true
+    "anvil@black-market": true
   }
 }
 ```
