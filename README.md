@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="anvil.png" alt="Anvil" width="200">
+  <img src=".github/anvil.png" alt="Anvil" width="200">
 </p>
 
 <h1 align="center">Anvil</h1>
