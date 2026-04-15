@@ -14,7 +14,7 @@ Create a new standalone issue .md file. Use this for issues outside the `/forge`
 ## Steps
 
 1. **Parse input:**
-   - If `$ARGUMENTS` is empty: ask the user for project name, issue title, and kind (strike or mend)
+   - If `$ARGUMENTS` is empty: ask the user for project name, issue title, and kind (strike, mend, or monitor)
    - Otherwise: extract project name (first word), title (quoted string), and optional `--kind` flag (defaults to `strike`)
 
 2. **Determine the next ID:**
@@ -26,6 +26,7 @@ Create a new standalone issue .md file. Use this for issues outside the `/forge`
    - Ask the user for a brief description of the issue
    - If `kind` is `mend`: ask what's broken, expected vs actual behavior
    - If `kind` is `strike`: ask what should be built, acceptance criteria
+   - If `kind` is `monitor`: ask what to watch, why it matters, thresholds/action triggers
    - For each question, recommend an answer if you can infer from context
 
 4. **Write the issue file** to `docs/specs/<project>/issues/<NNN>-<slug>.md`:
@@ -37,7 +38,7 @@ Create a new standalone issue .md file. Use this for issues outside the `/forge`
    status: todo
    phase: null
    heat: null
-   kind: <strike|mend>
+   kind: <strike|mend|monitor>
    priority: <1-4>
    blocked_by: []
    created: <YYYY-MM-DD>

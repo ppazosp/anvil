@@ -18,7 +18,7 @@ The `<slug>` is a kebab-case summary of the issue title.
 id: P1-001                 # Canonical identifier, matches filename prefix
 title: Short issue title    # Action verb + what
 status: todo                # todo | in-progress | done | canceled
-kind: strike                # strike (feature) | mend (bug fix)
+kind: strike                # strike (feature) | mend (bug fix) | monitor (observability)
 phase: 1                   # Phase number (null for standalone)
 heat: infra                 # Parallel workstream name (null for standalone)
 priority: 1                 # 1=critical, 2=high, 3=medium, 4=low
@@ -91,6 +91,26 @@ For bug fixes (`/mend`), the completion summary uses:
 
 ### Fix applied
 - Description of the change
+
+### Files modified
+- `path/to/file` — description
+```
+
+For monitoring issues (`monitor`), the completion summary uses:
+
+```markdown
+## Completion Summary
+
+**Result:** <outcome — e.g. "All tests pass", "Metric added", "Threshold tuned">
+
+### What was observed
+- Description of what was monitored or verified
+
+### Findings
+- What the data showed (frequencies, ratios, patterns)
+
+### Action taken
+- What was changed based on findings (or "None needed")
 
 ### Files modified
 - `path/to/file` — description

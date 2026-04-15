@@ -55,9 +55,9 @@ myapp — Phase 2: API  ░░░░░░░░░░ 0/5
 **Rules:**
 - One line per heat — issues chained horizontally with `→`
 - Heat name left-aligned, padded to align issue chains
-- Icons: `✅` done, `🔄` in-progress, `⏳` ready, `🔒` blocked, `❌` canceled
+- Icons: `✅` done, `🔄` in-progress, `⏳` ready, `🔒` blocked, `❌` canceled, `👁` monitor (ready)
 - Progress bar: filled/empty blocks proportional to done/total, then `done/total`
-- Ready-to-launch line at the bottom — one line, all launchable issues with their command (`/strike` or `/mend` based on `kind` field)
+- Ready-to-launch line at the bottom — one line, all launchable issues with their command (`/strike` or `/mend` based on `kind` field; `monitor` issues use `/strike`)
 - If nothing ready: show what's blocking next (e.g. "⏳ P2-002 waiting on P2-001")
 - Omit completed phases unless `--all` flag
 
