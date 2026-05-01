@@ -70,28 +70,34 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
 
 **Read CLAUDE.md** for project context.
 
-**Launch 2-3 explorer subagents IN PARALLEL (see `agents/explorer.md`):**
-- "Find features similar to [feature] and trace their implementation"
-- "Map the architecture and abstractions for [feature area]"
-- "Identify patterns, testing approaches, and extension points relevant to [feature]"
+**Default: 1 explorer subagent** (see `agents/explorer.md`) with a comprehensive prompt covering similar features, architecture, patterns, and extension points.
 
-**After agents return:**
-1. Read all key files they identified
+**Escalate to 2-3 parallel explorers ONLY if:**
+- Feature spans multiple unrelated subsystems (e.g. backend + frontend + infra)
+- `ISSUE_HEAT` is `high` AND issue is non-forged
+- Architecture is unknown / no similar features exist
+
+**After agent returns:**
+1. Read all key files identified
 2. Summarize findings and patterns
 
 ---
 
 ## Phase 3: Architecture Design
 
-**Launch 2-3 architect subagents IN PARALLEL (see `agents/architect.md`) with different focuses:**
-- Minimal changes (smallest change, maximum reuse)
-- Clean architecture (maintainability, elegant abstractions)
-- Pragmatic balance (speed + quality)
+**If `IS_FORGED` — SKIP architect subagents entirely.**
+The spec is the source of truth. Write a brief task list directly from `SPEC_CONTEXT` + issue body. No plan document needed unless the implementation has >5 distinct steps.
 
-**After agents return:**
-1. Select best approach
+**If NOT forged:**
+1. Launch **1 architect subagent** (see `agents/architect.md`) with a pragmatic-balance focus
 2. Write implementation plan to `docs/plans/YYYY-MM-DD-<feature-name>.md`
 3. Create task list from plan
+
+**Escalate to 2-3 parallel architects ONLY if:**
+- User explicitly requests comparing approaches
+- Trade-offs are genuinely contested (e.g. major refactor vs. additive change)
+
+Avoid the default of multiple architects — the architect agent is designed to commit to one approach, so running 3 in parallel produces 3 "decisive" plans that are then reduced to 1.
 
 ---
 
@@ -122,7 +128,10 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
    - `Cargo.toml` → `cargo build`
    - `go.mod` → `go mod download`
 
-5. **Run tests** to verify clean baseline. If tests fail: report, ask whether to proceed.
+5. **Skip baseline test run by default** — Phase 8 final verification covers regressions.
+   Only run baseline tests if:
+   - You suspect main is broken (recent failed CI, user mentions instability)
+   - The feature touches global setup/build config where a broken baseline would mask issues
 
 ---
 
@@ -132,19 +141,24 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
 
 **For each task from the plan:**
 
-1. **Write the failing test first.**
+1. **Decide test strategy:**
+   - **TDD (test-first)** for: business logic, algorithms, data transformations, anything with branches/edge cases
+   - **Test-after** acceptable for: config changes, copy/string edits, simple renames, glue code with no logic
+   - **No test** acceptable for: pure refactors covered by existing tests, type-only changes
+
+2. **If TDD: write the failing test first.**
    - One test for one behavior
    - Run it — verify it FAILS for the right reason (feature missing, not syntax error)
    - If it passes immediately: you're testing existing behavior, fix the test
    - If it errors (import, syntax): fix the error, re-run until it fails correctly
 
-2. **Write minimal code to make the test pass.**
-   - Simplest code that passes, nothing more
-   - Don't add features, refactor other code, or "improve" beyond the test
-   - Run test — verify it PASSES
-   - Run full suite — verify no regressions
+3. **Write minimal code to make the task pass.**
+   - Simplest code that works, nothing more
+   - Don't add features, refactor other code, or "improve" beyond the task
+   - Run any test you wrote — verify it PASSES
+   - **Skip the full suite between tasks** — Phase 8 runs it once at the end. Run the full suite mid-implementation only if you suspect a regression.
 
-3. **If tests fail after implementation:**
+4. **If tests fail after implementation:**
    - Read the error message carefully
    - Reproduce consistently
    - Check recent changes, trace data flow backward through call stack
@@ -152,12 +166,12 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
    - If fix doesn't work: new hypothesis — don't pile fixes on top of each other
    - After 3+ failed fix attempts: STOP. Question the approach. Reconsider architecture. If still stuck, ask the user.
 
-4. **Commit after each task:**
+5. **Commit after each task:**
    ```bash
    git commit -m "feat[<module>]: <what was implemented>"
    ```
 
-5. **Proceed to next task immediately**
+6. **Proceed to next task immediately**
 
 ---
 
@@ -165,11 +179,18 @@ End-to-end feature implementation driven by an issue .md file. Reads the issue, 
 
 **Goal:** Clean up before review
 
-**Dispatch the simplifier subagent** (see `agents/simplifier.md`) on all modified files.
+**Skip this phase if:**
+- Diff is < 100 lines OR < 3 files changed
+- Changes are mechanical (config, copy, renames, type-only)
+- You wrote the code carefully task-by-task and there's nothing obvious to consolidate
 
-The simplifier refines code for clarity, consistency, and maintainability while preserving functionality. It focuses on the files changed in this branch.
+**Otherwise, dispatch the simplifier subagent** (see `agents/simplifier.md`) on all modified files.
+
+The simplifier refines code for clarity, consistency, and maintainability while preserving functionality. It focuses on files changed in this branch.
 
 After simplifier returns: review its changes, commit if changes were made.
+
+**Note:** Simplifier MUST run before Phase 7 (reviewer) so the reviewer sees final code.
 
 ---
 
@@ -267,7 +288,8 @@ Show: what was built, architecture chosen, files modified, tests added, review f
 | Commits | Small, focused, conventional messages |
 | Ambiguity | Simpler solution, document in commit |
 | Blocked task | Try alternative, if stuck mark blocked and continue |
-| Architecture | Follow architect subagent recommendations |
+| Architecture (forged) | Follow the spec |
+| Architecture (non-forged) | Follow architect subagent recommendation |
 | Issue description vague (non-forged) | Ask user, don't assume scope |
 | Issue description vague (forged) | Trust the spec, proceed autonomously |
 | Merge | Always squash merge to main, push, clean up worktree |
@@ -287,9 +309,12 @@ Show: what was built, architecture chosen, files modified, tests added, review f
 
 ## Agents Used
 
-| Phase | Agents |
-|-------|--------|
-| 2 | Explorer subagents (2-3 parallel) — `agents/explorer.md` |
-| 3 | Architect subagents (2-3 parallel) — `agents/architect.md` |
-| 6 | Simplifier subagent — `agents/simplifier.md` |
-| 7 | Reviewer subagent — `agents/reviewer.md` |
+| Phase | Agents | When |
+|-------|--------|------|
+| 2 | Explorer (`agents/explorer.md`) | 1 by default; 2-3 parallel only if cross-cutting / unknown architecture |
+| 3 | Architect (`agents/architect.md`) | Skipped if forged; 1 if non-forged; 2-3 only if trade-offs are contested |
+| 6 | Simplifier (`agents/simplifier.md`) | Skipped for small/mechanical diffs |
+| 7 | Reviewer (`agents/reviewer.md`) | Always |
+
+**Typical strike (forged issue):** 1 explorer + 1 reviewer = 2 subagent calls
+**Heavy strike (complex non-forged):** 2-3 explorers + 1 architect + simplifier + reviewer = 5-6 calls
